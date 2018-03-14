@@ -93,6 +93,26 @@ public:
   }
 
   /**
+   * Returns first found plugin matching typename T. If specific element should be returned, do set name.
+   */
+  template<typename T>
+  bool getPlugin(boost::shared_ptr<T>& plugin, const std::string& plugin_name = std::string())
+  {
+
+    for ( boost::shared_ptr<PluginClass> plug : plugins_) {
+      plugin = boost::dynamic_pointer_cast< T >(plug);
+      if (plugin != nullptr){
+        if (plugin_name.length()==0 || plugin->getName() == plugin_name){
+          return true;
+        }
+      }
+    }
+
+    ROS_ERROR("PluginAggregator %s: Failed to find plugin of proper type named >%s<",name_.c_str(), plugin_name.c_str());
+    return false;
+  }
+
+  /**
    * @brief Returns the number of known plugins of type T.
    * @return Number of known plugins of type T
    */
